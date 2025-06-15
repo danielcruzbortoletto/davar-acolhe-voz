@@ -3,7 +3,7 @@ import openai
 import tempfile
 
 # Leitura da chave secreta (configure em `.streamlit/secrets.toml` ou no painel da nuvem)
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+openai.api_key = st.secrets["opean_api_key"]
 
 st.title("Davar Acolhe Voz")
 st.markdown("Envie um áudio com sua pergunta ou desabafo. Davar vai te escutar.")
