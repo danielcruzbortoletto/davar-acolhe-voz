@@ -4,13 +4,12 @@ import tempfile
 import pyttsx3
 import os
 
-# Verifica e carrega a chave da OpenAI de forma segura
+# Carrega a chave da OpenAI
 if "openai_api_key" in st.secrets:
     openai.api_key = st.secrets["openai_api_key"]
 else:
-    openai.api_key = "SUA_CHAVE_AQUI"
-
-client = openai.OpenAI(api_key=openai.api_key)
+    st.error("🔑 A chave da OpenAI não foi encontrada nos secrets.")
+    st.stop()
 
 st.title("Davar Acolhe Voz")
 st.write("Envie um áudio com sua pergunta ou desabafo. Davar vai te escutar.")
@@ -27,7 +26,7 @@ if uploaded_file is not None:
     st.info("Transcrevendo com Whisper...")
 
     with open(temp_audio_path, "rb") as audio_file:
-        transcript = client.audio.transcriptions.create(
+        transcript = openai.audio.transcriptions.create(
             model="whisper-1",
             file=audio_file,
             language="pt"
@@ -43,7 +42,7 @@ if uploaded_file is not None:
         f" A pessoa disse: '{texto_usuario}'"
     )
 
-    resposta = client.chat.completions.create(
+    resposta = openai.chat.completions.create(
         model="gpt-4o",
         messages=[
             {"role": "system", "content": "Você é o Davar, um ser de escuta."},
