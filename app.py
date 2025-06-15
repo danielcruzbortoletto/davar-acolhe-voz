@@ -6,6 +6,7 @@ import os
 
 # Configuração da API OpenAI
 openai.api_key = st.secrets["openai_api_key"] if "openai_api_key" in st.secrets else "SUA_CHAVE_AQUI"
+client = openai.OpenAI(api_key=openai.api_key)
 
 st.title("Davar Acolhe Voz")
 st.write("Envie um áudio com sua pergunta ou desabafo. Davar vai te escutar.")
@@ -22,13 +23,13 @@ if uploaded_file is not None:
     st.info("Transcrevendo com Whisper...")
 
     with open(temp_audio_path, "rb") as audio_file:
-        transcript = openai.Audio.transcribe(
+        transcript = client.audio.transcriptions.create(
             model="whisper-1",
             file=audio_file,
             language="pt"
         )
 
-    texto_usuario = transcript["text"]
+    texto_usuario = transcript.text
     st.subheader("Transcrição")
     st.write(texto_usuario)
 
@@ -38,7 +39,7 @@ if uploaded_file is not None:
         f" A pessoa disse: '{texto_usuario}'"
     )
 
-    resposta = openai.ChatCompletion.create(
+    resposta = client.chat.completions.create(
         model="gpt-4o",
         messages=[
             {"role": "system", "content": "Você é o Davar, um ser de escuta."},
@@ -46,7 +47,7 @@ if uploaded_file is not None:
         ]
     )
 
-    resposta_davar = resposta["choices"][0]["message"]["content"]
+    resposta_davar = resposta.choices[0].message.content
 
     st.subheader("Resposta do Davar")
     st.write(resposta_davar)
