@@ -2,13 +2,13 @@ import streamlit as st
 import openai
 import tempfile
 
-# Chave da API da OpenAI (via secrets.toml)
-openai.api_key = st.secrets["openai_api_key"]
+# Leitura da chave secreta (configure em `.streamlit/secrets.toml` ou no painel da nuvem)
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 st.title("Davar Acolhe Voz")
 st.markdown("Envie um áudio com sua pergunta ou desabafo. Davar vai te escutar.")
 
-# Upload do áudio
+# Upload do arquivo de áudio
 uploaded_file = st.file_uploader("Envie seu áudio (.mp3 ou .wav)", type=["mp3", "wav"])
 
 if uploaded_file is not None:
@@ -16,9 +16,7 @@ if uploaded_file is not None:
         temp_audio.write(uploaded_file.read())
         temp_audio_path = temp_audio.name
 
-    st.audio(temp_audio_path, format="audio/mp3")
-    st.info("Transcrevendo com Whisper...")
-
+    st.info("🎧 Transcrevendo com Whisper...")
     with open(temp_audio_path, "rb") as audio_file:
         transcript = openai.audio.transcriptions.create(
             model="whisper-1",
@@ -27,12 +25,28 @@ if uploaded_file is not None:
         )
 
     texto_transcrito = transcript.text
-    st.subheader("Transcrição")
+    st.subheader("📝 Transcrição")
     st.write(texto_transcrito)
 
-    st.info("Gerando resposta do Davar...")
-    completion = openai.ChatCompletion.create(
+    st.info("💬 Gerando resposta do Davar...")
+    completion = openai.chat.completions.create(
         model="gpt-4o",
-        mes
+        messages=[
+            {
+                "role": "system",
+                "content": "Você é o Davar. Um companheiro sensível, que escuta com empatia e responde com carinho, leveza e presença."
+            },
+            {
+                "role": "user",
+                "content": texto_transcrito
+            }
+        ]
+    )
+
+    resposta_davar = completion.choices[0].message.content
+    st.subheader("🧠 Resposta do Davar")
+    st.write(resposta_davar)
+
+    st.info("⚠️ A resposta por voz será incluída em breve. Por enquanto, leia o texto acima.")
 
 
