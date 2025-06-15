@@ -7,7 +7,7 @@ st.title("Davar Acolhe Voz")
 st.markdown("Envie um áudio com sua pergunta ou desabafo. Davar vai te escutar.")
 
 # Chave da API da OpenAI (acessada via secrets)
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+openai.api_key = st.secrets["openai_api_key"]
 
 uploaded_file = st.file_uploader("Envie seu áudio (.mp3 ou .wav)", type=["mp3", "wav"])
 
