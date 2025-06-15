@@ -5,7 +5,11 @@ import pyttsx3
 import os
 
 # Configuração da API OpenAI
-openai.api_key = st.secrets["openai_api_key"] if "openai_api_key" in st.secrets else "SUA_CHAVE_AQUI"
+openai.api_key = st.secrets["openai_api_key"] 
+
+st.info(f"🔐 Chave carregada? {'✅' if openai.api_key.startswith('sk-') else '❌'}")
+
+if "openai_api_key" in st.secrets else "SUA_CHAVE_AQUI"
 client = openai.OpenAI(api_key=openai.api_key)
 
 st.title("Davar Acolhe Voz")
