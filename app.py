@@ -4,12 +4,12 @@ import tempfile
 import pyttsx3
 import os
 
-# Configuração da API OpenAI
-openai.api_key = st.secrets["openai_api_key"] 
+# Verifica e carrega a chave da OpenAI de forma segura
+if "openai_api_key" in st.secrets:
+    openai.api_key = st.secrets["openai_api_key"]
+else:
+    openai.api_key = "SUA_CHAVE_AQUI"
 
-st.info(f"🔐 Chave carregada? {'✅' if openai.api_key.startswith('sk-') else '❌'}")
-
-if "openai_api_key" in st.secrets else "SUA_CHAVE_AQUI"
 client = openai.OpenAI(api_key=openai.api_key)
 
 st.title("Davar Acolhe Voz")
@@ -68,10 +68,6 @@ if uploaded_file is not None:
 
     st.subheader("Ouvir resposta do Davar")
     st.audio(audio_out_path, format="audio/mp3")
-
-    # Limpeza opcional dos arquivos temporários
-    # os.remove(temp_audio_path)
-    # os.remove(audio_out_path)
 
 else:
     st.info("Aguardando envio de um áudio...")
